@@ -37,7 +37,7 @@ export const getAllUserRoleByID = async (req,res) =>{
     }
 }
 
-export const RoleUpdate = async (req, res) =>{
+export const roleUpdate = async (req, res) =>{
     const {id} = req.params
     try{ 
         console.log(req.body)
@@ -49,7 +49,7 @@ export const RoleUpdate = async (req, res) =>{
     }
 }
 
-export const DeleteRole = async (req, res) =>{
+export const deleteRole = async (req, res) =>{
     const {id} = req.params
     console.log(id)
     try{
