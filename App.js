@@ -20,7 +20,7 @@ export const users = app.use('/users', UserRouter)
 export const DepartmentRoute = app.use('/dep', DeparmentRouter)
 export const BenifichryRoute = app.use('/Benifichry', BenifichryRouter)
 export const Town = app.use("/Town", TownRouter)
-export const Region = app.use("/Town", RegionRouter)
+export const Region = app.use("/Region", RegionRouter)
 export const Zone = app.use("/Zone", ZoneRouter)
 export const Customer  = app.use("/Customor" , CustomorRouter)
 
