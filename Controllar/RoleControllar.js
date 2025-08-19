@@ -1,7 +1,7 @@
-import userRoleModel from "../modal/userRoleModal.js";
+import RoleModel from "../modal/RoleModal.js";
 
 
-const UserRoles = userRoleModel
+const UserRoles = RoleModel
 export const createRole = async (req,res)=>{
 
 console.log(req.body)

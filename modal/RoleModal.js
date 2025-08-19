@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
- const userRoleSchema = new mongoose.Schema({
+ const RoleSchema = new mongoose.Schema({
     RoleName :{
         type : String,
         required : true
@@ -26,6 +26,6 @@ import mongoose from "mongoose";
  })
 
 
- const userRoleModel = mongoose.model('userRole', userRoleSchema)
+ const RoleModel = mongoose.model('Role', RoleSchema)
   
-  export default userRoleModel
+  export default RoleModel
