@@ -8,6 +8,7 @@ import TownRouter from "./Routes/TownRoute.js"
 import RegionRouter from "./Routes/RegionRoutes.js"
 import ZoneRouter from "./Routes/ZoneRoute.js"
 import CustomorRouter from "./Routes/CustomorRoute.js"
+import UserRoleRouter from "./Routes/userRoleRoute.js"
 
 const Router = express.Router()
 const app = express()
@@ -23,4 +24,4 @@ export const Town = app.use("/Town", TownRouter)
 export const Region = app.use("/Region", RegionRouter)
 export const Zone = app.use("/Zone", ZoneRouter)
 export const Customer  = app.use("/Customor" , CustomorRouter)
-
+export const Roles = app.use("/UserRole" , UserRoleRouter)
