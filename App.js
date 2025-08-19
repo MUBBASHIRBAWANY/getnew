@@ -10,6 +10,11 @@ import ZoneRouter from "./Routes/ZoneRoute.js"
 import CustomorRouter from "./Routes/CustomorRoute.js"
 import UserRoleRouter from "./Routes/userRoleRoute.js"
 import ChartofAccountsROuter from "./Routes/ChartofAccountsRoutes.js"
+import StoreRouter from "./Routes/StoreRoutes.js"
+import LocationRouter from "./Routes/LocationRoute.js"
+import ProductRouter from "./Routes/ProductRoute.js"
+import VendorROuter from "./Routes/VendorRoute.js"
+import OrderBookerRouter from "./Routes/OrderBookerRoute.js"
 
 const Router = express.Router()
 const app = express()
@@ -19,11 +24,14 @@ let dataBase = db
 dataBase()
 
 export const users = app.use('/users', UserRouter)
-export const DepartmentRoute = app.use('/dep', DeparmentRouter)
-export const BenifichryRoute = app.use('/Benifichry', BenifichryRouter)
+export const Roles = app.use("/UserRole" , UserRoleRouter)
+export const Store = app.use("/store", StoreRouter)
+export const Location = app.use("/Location", LocationRouter)
+export const Accounts = app.use("/ChartOfAccounts", ChartofAccountsROuter)
+export const Product = app.use("/Product" , ProductRouter)
+export const Vendor = app.use("/Vendor", VendorROuter)
 export const Town = app.use("/Town", TownRouter)
 export const Region = app.use("/Region", RegionRouter)
 export const Zone = app.use("/Zone", ZoneRouter)
 export const Customer  = app.use("/Customor" , CustomorRouter)
-export const Roles = app.use("/UserRole" , UserRoleRouter)
-export const Accounts = app.use("/ChartOfAccounts", ChartofAccountsROuter)
+export const OrderBooker = app.use("/OrderBooker" , OrderBookerRouter)
