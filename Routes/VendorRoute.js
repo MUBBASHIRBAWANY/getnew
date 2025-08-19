@@ -2,7 +2,7 @@ import express from "express";
 import { createVendor, deleteVendor, getAllVendor, getLastVendorCode, PushBulkDataInVendor, updateVendor } from "../Controllar/VendorConrolar.js";
 
 
-export  const VendorROuter = express.Router()
+const VendorROuter = express.Router()
 
 VendorROuter.post('/', createVendor)
 VendorROuter.get('/', getAllVendor)
@@ -11,3 +11,4 @@ VendorROuter.put('/updateVendor/:id', updateVendor)
 VendorROuter.delete('/deleteVendor/:id', deleteVendor)
 VendorROuter.post('/AddBulkVendor', PushBulkDataInVendor)
 
+export default VendorROuter
