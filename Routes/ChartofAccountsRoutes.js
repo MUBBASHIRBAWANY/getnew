@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateChartofAccounts,  deleteChartofAccounts, getAllChartofAccounts,  getONlyStage4,  updateChartofAccounts } from "../Controllar/ChartofAccountsControllars.js";
+import { CreateChartofAccounts,  deleteChartofAccounts, getAllChartofAccounts,  getONlyStage4,  updateChartofAccounts } from "../Controller/ChartofAccountsControllars.js";
 
 
 export  const ChartofAccountsROuter = express.Router()

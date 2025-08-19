@@ -1,5 +1,5 @@
 import express from "express";
-import { AddPurchaseInvoiceInbulk, createPurchaseInvoice, deletePurchcaseInvoice, getAllPurchaseInvoice, postPurchaseinvoice, updatePurchaseInvoice } from "../Controllar/PurchaseInvoiceControllar.js";
+import { AddPurchaseInvoiceInbulk, createPurchaseInvoice, deletePurchcaseInvoice, getAllPurchaseInvoice, postPurchaseinvoice, updatePurchaseInvoice } from "../Controller/PurchaseInvoiceControllar.js";
 
 const PurchaseInvoiceRouter = express.Router()
 

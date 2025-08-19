@@ -36,6 +36,7 @@ export const updateOrderBooker = async (req, res) => {
 export const getAllOrderBooker = async (req, res) => {
     try {
         const data = await OrderBookerModal.find()
+        console.log(data)
         res.status(200).send({ status: true, data: data });
     } catch (err) {
         res.status(400).send("some thing went wrong")

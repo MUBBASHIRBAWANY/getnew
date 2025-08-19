@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllAccountOpening, createAccountOpening, updateAccountOpening, deleteAccountOpening } from '../Controllar/AccountOpeningBalanceControllar.js';
+import { getAllAccountOpening, createAccountOpening, updateAccountOpening, deleteAccountOpening } from '../Controller/AccountOpeningBalanceControllar.js';
 
 const AccountOpeningRouter = express.Router();
 

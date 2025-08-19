@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateChannelType, deleteChannelType, getAllChannelType, getChannelTypeByVendor, getLastChannelTypeCode, PushBulkData, updateChannelType } from "../Controllar/ChannelTypeControllar.js";
+import { CreateChannelType, deleteChannelType, getAllChannelType, getChannelTypeByVendor, getLastChannelTypeCode, PushBulkData, updateChannelType } from "../Controller/ChannelTypeControllar.js";
 const ChannelTypeRouter = express.Router()
 
 

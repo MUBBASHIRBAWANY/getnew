@@ -1,5 +1,5 @@
 import express from "express";
-import { getSalesInvoiceByDate } from "../Controllar/InventoryReportControllar.js";
+import { getSalesInvoiceByDate } from "../Controller/InventoryReportControllar.js";
 
 
 const InventoryReportRoute = express.Router()

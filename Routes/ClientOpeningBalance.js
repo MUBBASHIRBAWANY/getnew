@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateClientOpeningBalance, deleteOpeningBalance, EditOpeningBalance, getAllClientOpeningBalance } from "../Controllar/ClientOpeningBalanceControllar.js";
+import { CreateClientOpeningBalance, deleteOpeningBalance, EditOpeningBalance, getAllClientOpeningBalance } from "../Controller/ClientOpeningBalanceControllar.js";
 
 const ClientOpeningBalanceRouter = express.Router()
 

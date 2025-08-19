@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateTown, updateTown, getAllTown, deleteTown, getLastTownCode,  PushBulkDataInTown,  } from "../Controllar/TownControllar.js";
+import { CreateTown, updateTown, getAllTown, deleteTown, getLastTownCode,  PushBulkDataInTown,  } from "../Controller/TownControllar.js";
 const TownRouter = express.Router()
 
 

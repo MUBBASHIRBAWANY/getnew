@@ -1,5 +1,5 @@
 import express from 'express'
-import {Createlocation, deletelocation, getAlllocation, getLastlocationCode, PushBulkDataInlocation, updatelocation , } from '../Controllar/LocationControllar.js'
+import {Createlocation, deletelocation, getAlllocation, getLastlocationCode, PushBulkDataInlocation, updatelocation , } from '../Controller/LocationControllar.js'
 const LocationRouter = express.Router()
 
 LocationRouter.get('/', getAlllocation),

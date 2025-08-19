@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateBrand, deleteBrand, getAllBrand, getBrandbyCat, getLastBrandCode, PushBulkDataInBrand, updateBrand } from "../Controllar/BrandControllar.js";
+import { CreateBrand, deleteBrand, getAllBrand, getBrandbyCat, getLastBrandCode, PushBulkDataInBrand, updateBrand } from "../Controller/BrandControllar.js";
 const BrandRouter = express.Router()
 
 

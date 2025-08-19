@@ -1,5 +1,5 @@
 import express from "express";
-import { createTransferOut, createTransferOutBulk, deleteTransferOut, getAllTransferOuts,  postTransferOut, updateTransferOut } from "../Controllar/InventoryTransferOutControllar.js";
+import { createTransferOut, createTransferOutBulk, deleteTransferOut, getAllTransferOuts,  postTransferOut, updateTransferOut } from "../Controller/InventoryTransferOutControllar.js";
 
 const InventoryTransferOutRouter = express.Router()
 

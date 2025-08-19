@@ -1,4 +1,4 @@
-import {createVoucher, getVouchers, getVoucherByCode, updateVoucher, deleteVoucher, createSystemVoucher, getVoucherById, getVoucherByNumber, deleteVoucherByNumber} from '../Controllar/VoucherControllar.js';
+import {createVoucher, getVouchers, getVoucherByCode, updateVoucher, deleteVoucher, createSystemVoucher, getVoucherById, getVoucherByNumber, deleteVoucherByNumber} from '../Controller/VoucherControllar.js';
 
 
 import express from 'express';

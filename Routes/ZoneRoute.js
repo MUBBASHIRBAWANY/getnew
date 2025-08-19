@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateZone, deleteZone, getAllZone, getLastZoneCode, updateZone } from "../Controllar/ZoneControllar.js";
+import { CreateZone, deleteZone, getAllZone, getLastZoneCode, updateZone } from "../Controller/ZoneControllar.js";
 
 const ZoneRouter = express.Router()
 

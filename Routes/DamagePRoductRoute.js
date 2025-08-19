@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllDamageProductQty } from "../Controllar/DamageProductControllar.js";
+import { getAllDamageProductQty } from "../Controller/DamageProductControllar.js";
 
 
 const DamageProductRouter = express.Router()

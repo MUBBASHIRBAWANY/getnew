@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateCity, deleteCity, getAllCity, getLastCityCodeByVendor, PushBulkDataInCity, updateCity } from "../Controllar/CItyControllar.js";
+import { CreateCity, deleteCity, getAllCity, getLastCityCodeByVendor, PushBulkDataInCity, updateCity } from "../Controller/CItyControllar.js";
 
 const CityRouter = express.Router()
 

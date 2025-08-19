@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateMasterSKu, updateMasterSKu, getAllMasterSKu, deleteMasterSKu, getLastMasterSKuCode, getMskuByBrand, PushBulkDataInMaster } from "../Controllar/MasterSKuControllar.js";
+import { CreateMasterSKu, updateMasterSKu, getAllMasterSKu, deleteMasterSKu, getLastMasterSKuCode, getMskuByBrand, PushBulkDataInMaster } from "../Controller/MasterSKuControllar.js";
 const MasterSkuRouter = express.Router()
 
 

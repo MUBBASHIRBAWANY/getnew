@@ -1,5 +1,5 @@
 import express from "express";
-import { createSalesReturn, createSalesInvoiceReturnBulk, deleteSalesReturn, getAllSalesReturn,  postSalesReturn, updateSalesReturn } from "../Controllar/SalesInvoiceReturnControllar.js";
+import { createSalesReturn, createSalesInvoiceReturnBulk, deleteSalesReturn, getAllSalesReturn,  postSalesReturn, updateSalesReturn } from "../Controller/SalesInvoiceReturnControllar.js";
 
 const SalesInvoiceReturnRouter = express.Router()
 

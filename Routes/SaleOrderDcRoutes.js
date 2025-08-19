@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateSaleOrderDC, DeleteSaleOrderDC, GetAllSaleOrderDC, LastSaleOrderDC, updateOrderStatusDC, UpdateSaleOrderDC } from "../Controllar/SaleOrderDcControllar.js";
+import { CreateSaleOrderDC, DeleteSaleOrderDC, GetAllSaleOrderDC, LastSaleOrderDC, updateOrderStatusDC, UpdateSaleOrderDC } from "../Controller/SaleOrderDcControllar.js";
 const SaleOrderDcRouter = express.Router()
 
 

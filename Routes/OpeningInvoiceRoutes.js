@@ -1,5 +1,5 @@
 
-import { CreateOpeningInvoice, getAllOpeningInvoices, updateOpeningInvoice,deleteOpeningInvoice} from "../Controllar/OpeningInvoiceControllar.js";
+import { CreateOpeningInvoice, getAllOpeningInvoices, updateOpeningInvoice,deleteOpeningInvoice} from "../Controller/OpeningInvoiceControllar.js";
 import { Router } from "express";
 
 

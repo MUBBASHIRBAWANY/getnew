@@ -1,5 +1,5 @@
 import express from "express";
-import { createVendor, deleteVendor, getAllVendor, getLastVendorCode, PushBulkDataInVendor, updateVendor } from "../Controllar/VendorConrolar.js";
+import { createVendor, deleteVendor, getAllVendor, getLastVendorCode, PushBulkDataInVendor, updateVendor } from "../Controller/VendorConrolar.js";
 
 
 const VendorROuter = express.Router()

@@ -1,7 +1,7 @@
 import express from "express";
 
 
-import { createChqBook, getChqBooks,  updateChqBook, deleteChqBook, createChq, getLastChqBook, updateChequeStatus, getOnlyOpenChqBook } from '../Controllar/ChqBookControllar.js';
+import { createChqBook, getChqBooks,  updateChqBook, deleteChqBook, createChq, getLastChqBook, updateChequeStatus, getOnlyOpenChqBook } from '../Controller/ChqBookControllar.js';
 
 
 const ChqBookRouter = express.Router();

@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateOrderBooker, deleteOrderBooker, getAllOrderBooker, getOrderBookerByVendor, getLastOrderBookerCode, PushBulkData, updateOrderBooker } from "../Controllar/OrderBookerControllar.js";
+import { CreateOrderBooker, deleteOrderBooker, getAllOrderBooker, getOrderBookerByVendor, getLastOrderBookerCode, PushBulkData, updateOrderBooker } from "../Controller/OrderBookerControllar.js";
 const OrderBookerRouter = express.Router()
 
 

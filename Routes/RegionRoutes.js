@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateRegion, updateRegion, getAllRegion, deleteRegion, getLastRegionCode,  PushBulkDataInRegion,  } from "../Controllar/RegionControlar.js";
+import { CreateRegion, updateRegion, getAllRegion, deleteRegion, getLastRegionCode,  PushBulkDataInRegion,  } from "../Controller/RegionControlar.js";
 const RegionRouter = express.Router()
 
 

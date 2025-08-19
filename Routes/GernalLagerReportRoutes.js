@@ -1,6 +1,6 @@
 
 import express from "express";
-import GernalLager from "../Controllar/GernalLagerControllar.js";
+import GernalLager from "../Controller/GernalLagerControllar.js";
 
 const GernalLagerRouter = express.Router()
 

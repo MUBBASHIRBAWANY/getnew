@@ -1,5 +1,5 @@
 import express from "express";
-import { AddCustomerInBulk, creatCutomer, CustomerByVendor, deletCutomer, getAllCutomer, getLastCutomer, updatCutomer } from "../Controllar/CostomerControllar.js";
+import { AddCustomerInBulk, creatCutomer, CustomerByVendor, deletCutomer, getAllCutomer, getLastCutomer, updatCutomer } from "../Controller/CostomerControllar.js";
 
 
 const CustomorROuter = express.Router()

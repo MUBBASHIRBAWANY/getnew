@@ -1,5 +1,5 @@
 import express from "express";
-import { changeStatusOnly, createOpennigBalance, deleteOpeningInvetory, genrateNewYear, getAllOpeningInventory, UpdateOpeningInvetory } from "../Controllar/OpeningControllar.js";
+import { changeStatusOnly, createOpennigBalance, deleteOpeningInvetory, genrateNewYear, getAllOpeningInventory, UpdateOpeningInvetory } from "../Controller/OpeningControllar.js";
 
 const OpeninginventoryRoute = express.Router()
 

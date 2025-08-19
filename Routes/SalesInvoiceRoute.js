@@ -1,5 +1,5 @@
 import express from "express";
-import { BulkpostSalesinvoice, createSalesInvoice, createSalesInvoiceBulk, deleteSaleInvoice, getAllSaleInvoice,  getLimitedSaleInvoice,  getOnlyRemain,  postSalesinvoice, UpdateSalesInvoice } from "../Controllar/SalesInvoiceControllar.js";
+import { BulkpostSalesinvoice, createSalesInvoice, createSalesInvoiceBulk, deleteSaleInvoice, getAllSaleInvoice,  getLimitedSaleInvoice,  getOnlyRemain,  postSalesinvoice, UpdateSalesInvoice } from "../Controller/SalesInvoiceControllar.js";
 
 const SalesInvoiceRouter = express.Router()
 

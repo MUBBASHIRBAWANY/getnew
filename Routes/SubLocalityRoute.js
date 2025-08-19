@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateSubLocality, deleteSubLocality, getAllSubLocality,  getSubLocalityByLocality, PushBulkDataInSubLocality, updateSubLocality } from "../Controllar/SubLocalityControllar.js";
+import { CreateSubLocality, deleteSubLocality, getAllSubLocality,  getSubLocalityByLocality, PushBulkDataInSubLocality, updateSubLocality } from "../Controller/SubLocalityControllar.js";
 
 const SubLocalityRouter = express.Router()
 

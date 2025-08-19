@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateTerrotory, updateTerrotory, getAllTerrotory, deleteTerrotory, getLastTerrotoryCode,  PushBulkDataInTerrotory,  } from "../Controllar/TerrotoryControllar.js";
+import { CreateTerrotory, updateTerrotory, getAllTerrotory, deleteTerrotory, getLastTerrotoryCode,  PushBulkDataInTerrotory,  } from "../Controller/TerrotoryControllar.js";
 const TerrotoryRouter = express.Router()
 
 

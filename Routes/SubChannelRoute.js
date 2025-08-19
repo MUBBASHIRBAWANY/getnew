@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateSubChannel, deleteSubChannel, getAllSubChannel, getSubChannelByChannel, getLastSubChannelCode,  PushBulkData, updateSubChannel } from "../Controllar/SubChannelControllar.js";
+import { CreateSubChannel, deleteSubChannel, getAllSubChannel, getSubChannelByChannel, getLastSubChannelCode,  PushBulkData, updateSubChannel } from "../Controller/SubChannelControllar.js";
 const SubChannelRouter = express.Router()
 
 

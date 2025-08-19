@@ -1,6 +1,6 @@
 import express from "express";
-import { createStockReplacement, createStockReplacementBulk, deleteStockReplacement, getAllStockReplacement,  postStockReplacement, UpdateStockReplacement } from "../Controllar/StockReplacementControllar.js";
-import { BulkpostSalesinvoice } from "../Controllar/SalesInvoiceControllar.js";
+import { createStockReplacement, createStockReplacementBulk, deleteStockReplacement, getAllStockReplacement,  postStockReplacement, UpdateStockReplacement } from "../Controller/StockReplacementControllar.js";
+import { BulkpostSalesinvoice } from "../Controller/SalesInvoiceControllar.js";
 
 const StockReplacementRouter = express.Router()
 

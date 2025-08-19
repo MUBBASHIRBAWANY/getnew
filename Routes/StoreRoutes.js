@@ -1,5 +1,5 @@
 import express from 'express'
-import {CreateStore , updateStore , getAllStore , getLastStoreCode , deleteStore , PushBulkDataInStore, getStoreByLocation} from '../Controllar/StoreControllar.js'
+import {CreateStore , updateStore , getAllStore , getLastStoreCode , deleteStore , PushBulkDataInStore, getStoreByLocation} from '../Controller/StoreControllar.js'
 const StoreRouter = express.Router()
 
 StoreRouter.get('/', getAllStore),

@@ -1,5 +1,5 @@
 import express from "express";
-import { AddPurchaseReturnInBulk, createPurchaseReturn, deletePurchaseReturn, getAllPurchaseReturns, postPurchaseReturn, updatePurchaseReturn } from "../Controllar/PurchaseReturnControllar.js";
+import { AddPurchaseReturnInBulk, createPurchaseReturn, deletePurchaseReturn, getAllPurchaseReturns, postPurchaseReturn, updatePurchaseReturn } from "../Controller/PurchaseReturnControllar.js";
 
 const PurchaseReturnRouter = express.Router()
 

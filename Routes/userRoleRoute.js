@@ -1,5 +1,5 @@
 import express from "express";
-import { createRole, DeleteRole, getAllUserRoleByID, getAllUserRoles, RoleUpdate } from "../Controllar/userRoleControllar.js";
+import { createRole, DeleteRole, getAllUserRoleByID, getAllUserRoles, RoleUpdate } from "../Controller/userRoleControllar.js";
 const app = express()
 const UserRoleRouter = express.Router()
 

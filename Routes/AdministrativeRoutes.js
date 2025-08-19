@@ -1,4 +1,4 @@
-import {updateAdministrative , GetAdministrative} from "../Controllar/AdministrativeControllar.js"
+import {updateAdministrative , GetAdministrative} from "../Controller/AdministrativeController.js"
 import express from "express"
 
 const AdministrativeRouter = express.Router()
