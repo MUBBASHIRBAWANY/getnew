@@ -46,8 +46,8 @@ import SaleOrderDcRouter from "./Routes/SaleOrderDcRoutes.js"
 const Router = express.Router()
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '50000mb' }));
-app.use(express.urlencoded({ limit: '50000mb', extended: true }));
+app.use(express.json());
+
 
 let dataBase = db()
 export const users = app.use('/users', UserRouter)
