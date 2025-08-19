@@ -3,7 +3,7 @@ import cors from 'cors'
 import db from "./db/db.js"
 import UserRouter from "./Routes/userRoutes.js"
 import UserRoleRouter from "./Routes/userRoleRoute.js"
-import { VendorROuter } from "./Routes/VendorRoute.js"
+import  VendorROuter  from "./Routes/VendorRoute.js"
 import BrandRouter from "./Routes/BrandRoute.js"
 import MasterSkuRouter from "./Routes/MasterSkuRoute.js"
 import CategoryRouter from "./Routes/CategoryRoute.js"

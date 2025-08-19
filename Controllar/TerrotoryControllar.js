@@ -1,5 +1,4 @@
 import TerrotoryModal from "../modal/TerrotoryModal.js";
-import { v4 as uuidv4 } from 'uuid';
 export const CreateTerrotory = async (req, res) => {
     try {
         const data = await TerrotoryModal.create(req.body)
