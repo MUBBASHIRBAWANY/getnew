@@ -14,7 +14,7 @@ import StoreRouter from "./Routes/StoreRoutes.js"
 import LocationRouter from "./Routes/LocationRoute.js"
 import ProductRouter from "./Routes/ProductRoute.js"
 import VendorROuter from "./Routes/VendorRoute.js"
-import OrderBookerRouter from "./Routes/OrderBookerRoute.js"
+import BookerRouter from "./Routes/BookerRoute.js"
 
 const Router = express.Router()
 const app = express()
@@ -34,4 +34,4 @@ export const Town = app.use("/Town", TownRouter)
 export const Region = app.use("/Region", RegionRouter)
 export const Zone = app.use("/Zone", ZoneRouter)
 export const Customer  = app.use("/Customor" , CustomorRouter)
-export const OrderBooker = app.use("/OrderBooker" , OrderBookerRouter)
+export const OrderBooker = app.use("/OrderBooker" , BookerRouter)
