@@ -7,6 +7,7 @@ import BenifichryRouter from "./Routes/BenifichryRouter.js"
 import UserRoleRouter from "./Routes/userRoleRoute.js"
 
 
+
 const Router = express.Router()
 const app = express()
 app.use(cors());
@@ -17,6 +18,6 @@ dataBase()
 export const users = app.use('/users', UserRouter)
 export const DepartmentRoute = app.use('/dep', DeparmentRouter)
 export const BenifichryRoute = app.use('/Benifichry', BenifichryRouter)
-export const UserRoleRoute  = app.use("/userRole" , UserRoleRouter)
+export const UserRoleRoute = app.use("/userRole", UserRoleRouter)
 
 
