@@ -16,6 +16,13 @@ import ProductRouter from "./Routes/ProductRoute.js"
 import VendorROuter from "./Routes/VendorRoute.js"
 import BookerRouter from "./Routes/BookerRoute.js"
 import OpeninginventoryRoute from "./Routes/OpeninginventoryRoute.js"
+import SaleOrderRouter from "./Routes/SaleOrderRoutes.js";
+import SaleOrderDcRouter from "./Routes/SaleOrderDcRoutes.js";
+import PurchaseInvoiceRouter from "./Routes/PurchaseInvoiceRoute.js";
+import TotalProductRouter from "./Routes/TotalProductRoute.js";
+import SalesInvoiceRouter from "./Routes/SalesInvoiceRoute.js";
+import PurchaseReturnRouter from "./Routes/PurchaseReturnRoute.js"
+import SalesInvoiceReturnRouter from "./Routes/SalesInvoiceReturnRoute.js"
 
 const Router = express.Router()
 const app = express()
@@ -37,3 +44,11 @@ export const Zone = app.use("/Zone", ZoneRouter)
 export const Customer  = app.use("/Customor" , CustomorRouter)
 export const OrderBooker = app.use("/OrderBooker" , BookerRouter)
 export const OpeningInventory = app.use("/Openinginventory" , OpeninginventoryRoute)
+export const AccountOpeningRouter = app.use("/AccountOpening", AccountOpeningRouter)
+export const PurchaseInvoiceRoute = app.use("/purchaseInvoice", PurchaseInvoiceRouter);
+export const TotalProductRoute = app.use("/totalProduct", TotalProductRouter);
+export const SaleOrderRoute = app.use("/saleOrder", SaleOrderRouter);
+export const SaleOrderDcRoute = app.use("/dcOrder", SaleOrderDcRouter);
+export const PurchaseReturnRoute = app.use("/purchaseReturn", PurchaseReturnRouter);
+export const SalesInvoiceReturnRoute = app.use("/salesInvoiceReturn", SalesInvoiceReturnRouter);
+export const SalesInvoiceRoute = app.use("/saleInvoice", SalesInvoiceRouter);

@@ -1,10 +1,12 @@
 import DamageProductModal from "../modal/DamageProductModal.js";
+import PurchaseInvoiceModal from "../modal/PurchaseInvoiceModal.js";
 import PurchaseReturnModal from "../modal/PurchaseReturnModal.js";
 import TotalProductModal from "../modal/TotalProductModal.js";
+import VoucherModal from "../modal/VoucherModal.js";
 
 // Create Purchase Return
 export const createPurchaseReturn = async (req, res) => {
-    const { Vendor, PurchaseReturnData, VendorCode, PurchaseReturnDate, SalesFlowRef, Store, Location } = req.body;
+    const { Vendor, PurchaseReturnData, VendorCode, PurchaseReturnDate, SalesFlowRef, Store, InvoiceRef, Location } = req.body;
     try {
         const stockChecks = await Promise.all(
             PurchaseReturnData.map(async (item) => {
@@ -57,6 +59,7 @@ export const createPurchaseReturn = async (req, res) => {
             PostStatus: false,
             Store,
             Location,
+            InvoiceRef
         });
 
         res.status(200).send(data);
@@ -69,7 +72,7 @@ export const createPurchaseReturn = async (req, res) => {
 // Update Purchase Return
 export const updatePurchaseReturn = async (req, res) => {
     const { id } = req.params;
-    const { PurchaseReturnData, PurchaseReturnDate, SalesFlowRef } = req.body;
+    const { PurchaseReturnData, PurchaseReturnDate } = req.body;
 
     try {
         await PurchaseReturnModal.findByIdAndUpdate(id, {
@@ -140,14 +143,14 @@ export const AddPurchaseReturnInBulk = async (req, res) => {
 
 // Post/Unpost
 export const postPurchaseReturn = async (req, res) => {
-    const { status, returnData, Location, Store} = req.body;
-    const { id } = req.params;
+    const { status, returnData, Location, Store, inv, AccountsData } = req.body;
     console.log(returnData)
+    const { id } = req.params;
     if (status === true) {
         // Posting → Reduce stock
         try {
-            if(returnData[0].Condition == "Fresh"){
-             const stockChecks = await Promise.all(
+
+            const stockChecks = await Promise.all(
                 returnData.map(async (item) => {
                     const product = await TotalProductModal.findOne({
                         ProductName: item.product,
@@ -197,72 +200,32 @@ export const postPurchaseReturn = async (req, res) => {
             }));
 
             await TotalProductModal.bulkWrite(bulkOps);
-            await PurchaseReturnModal.findByIdAndUpdate(id, { PostStatus: status });
+            const updateStatus = await PurchaseReturnModal.findByIdAndUpdate(id, { PostStatus: status });
+            const invoiceDoc = await PurchaseInvoiceModal.findOne({ PurchaseInvoice: inv });
 
+            if (invoiceDoc) {
+                for (const purchasedItem of invoiceDoc.PurchaseData) {
+                    const returnedItem = returnData.find(r => String(r.id) === String(purchasedItem.id));
+                    console.log(returnedItem , "returnedItem")
+                    if (returnedItem) {
+                        purchasedItem.Remaining = Math.max(
+                            (purchasedItem.Remaining || 0) - (returnedItem.totalBox || 0),
+                            0
+                        );
+                    }
+                }
+                invoiceDoc.markModified('PurchaseData');
+                await invoiceDoc.save();
+            }
+            console.log(AccountsData)
+            await VoucherModal.create(AccountsData)
             return res.status(200).json({
                 success: true,
                 message: "Return posted and stock deducted successfully"
             });
-            }
-            else if (returnData[0].Condition == "Damage"){
-               const stockChecks = await Promise.all(
-                returnData.map(async (item) => {
-                    const product = await DamageProductModal.findOne({
-                        ProductName: item.product,
-                        Location,
-                        Store
-                    });
 
-                    return { product, item };
-                })
-            );
 
-            const insufficientStock = stockChecks.filter(({ product, item }) =>
-                !product || (product.TotalQuantity || 0) < (item.totalBox || 0)
-            );
 
-            if (insufficientStock.length > 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Insufficient stock to return",
-                    errors: insufficientStock.map(({ product, item }) =>
-                        !product
-                            ? { productId: item.product, message: "Product not found" }
-                            : {
-                                product: product.ProductName,
-                                available: product.TotalQuantity,
-                                tryingToDeduct: item.totalBox
-                            }
-                    )
-                });
-            }
-
-            const bulkOps = returnData.map(item => ({
-                updateOne: {
-                    filter: {
-                        ProductName: item.product,
-                        Location,
-                        Store,
-                        TotalQuantity: { $gte: item.totalBox }
-                    },
-                    update: {
-                        $inc: {
-                            TotalQuantity: -Number(item.totalBox),
-                            Amount: -Number(item.amount || 0)
-                        }
-                    }
-                }
-            }));
-
-            await DamageProductModal.bulkWrite(bulkOps);
-            await PurchaseReturnModal.findByIdAndUpdate(id, { PostStatus: status });
-
-            return res.status(200).json({
-                success: true,
-                message: "Return posted and stock deducted successfully"
-            }); 
-            }
-         
 
         } catch (error) {
             console.error("Error posting return:", error);
@@ -272,11 +235,13 @@ export const postPurchaseReturn = async (req, res) => {
             });
         }
 
-    } else {
+    }
+    else {
         // Unposting → Add stock back
         try {
-            if(returnData[0].Condition == "Fresh"){
-                    const bulkOps = returnData.map(item => ({
+            console.log(returnData)
+            // 1️⃣ Add stock back to TotalProduct
+            const bulkOps = returnData.map(item => ({
                 updateOne: {
                     filter: {
                         ProductName: item.product,
@@ -287,101 +252,46 @@ export const postPurchaseReturn = async (req, res) => {
                         $inc: {
                             TotalQuantity: Number(item.totalBox),
                             Amount: Number(item.amount || 0)
-                        },
-                        $setOnInsert: {
-                            ProductName: item.product,
-                            Location,
-                            Store
                         }
-                    },
-                    upsert: true
+                    }
                 }
             }));
 
             await TotalProductModal.bulkWrite(bulkOps);
+
+            // 2️⃣ Update Purchase Return status
             await PurchaseReturnModal.findByIdAndUpdate(id, { PostStatus: status });
-            console.log(status)
 
-            for (const item of returnData) {
-                const product = await TotalProductModal.findOne({
-                    ProductName: item.product,
-                    Location,
-                    Store
-                });
+            // 3️⃣ Restore invoice Remaining
+            const invoiceDoc = await PurchaseInvoiceModal.findOne({ PurchaseInvoice: inv });
 
-                if (product && product.TotalQuantity > 0) {
-                    const avgRate = product.Amount / product.TotalQuantity;
-                    await TotalProductModal.updateOne(
-                        { _id: product._id },
-                        { $set: { AvgRate: avgRate } }
-                    );
+            if (invoiceDoc) {
+                for (const purchasedItem of invoiceDoc.PurchaseData) {
+                    const returnedItem = returnData.find(r => String(r.id) === String(purchasedItem.id));
+                    if (returnedItem) {
+                        purchasedItem.Remaining =
+                            (purchasedItem.Remaining || 0) + (returnedItem.totalBox || 0);
+                    }
                 }
+                invoiceDoc.markModified("PurchaseData");
+                await invoiceDoc.save();
             }
 
-            await PurchaseReturnModal.findByIdAndUpdate(id, { PostStatus: status });
+            // 4️⃣ Remove related voucher (based on AccountsData info)
+            if (AccountsData?.VoucherNumber) {
+                await VoucherModal.deleteOne({ VoucherNumber: AccountsData.VoucherNumber });
+            }
 
             return res.status(200).json({
                 success: true,
-                message: "Return unposted and stock restored"
+                message: "Return unposted and stock restored successfully"
             });
-            }
-            else if(returnData[0].Condition == "Damge"){
-                   const bulkOps = returnData.map(item => ({
-                updateOne: {
-                    filter: {
-                        ProductName: item.product,
-                        Location,
-                        Store
-                    },
-                    update: {
-                        $inc: {
-                            TotalQuantity: Number(item.totalBox),
-                            Amount: Number(item.amount || 0)
-                        },
-                        $setOnInsert: {
-                            ProductName: item.product,
-                            Location,
-                            Store
-                        }
-                    },
-                    upsert: true
-                }
-            }));
-
-            await DamageProductModal.bulkWrite(bulkOps);
-            await PurchaseReturnModal.findByIdAndUpdate(id, { PostStatus: status });
-            console.log(status)
-
-            for (const item of returnData) {
-                const product = await DamageProductModal.findOne({
-                    ProductName: item.product,
-                    Location,
-                    Store
-                });
-
-                if (product && product.TotalQuantity > 0) {
-                    const avgRate = product.Amount / product.TotalQuantity;
-                    await DamageProductModal.updateOne(
-                        { _id: product._id },
-                        { $set: { AvgRate: avgRate } }
-                    );
-                }
-            }
-
-            await PurchaseReturnModal.findByIdAndUpdate(id, { PostStatus: status });
-
-            return res.status(200).json({
-                success: true,
-                message: "Return unposted and stock restored"
-            }); 
-            }
-        
 
         } catch (error) {
             console.error("Error unposting return:", error);
             return res.status(500).json({
                 success: false,
-                message: "Failed to unpost return"
+                message: "Error while unposting return"
             });
         }
     }

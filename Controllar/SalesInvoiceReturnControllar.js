@@ -1,10 +1,12 @@
 import DamageProductModal from "../modal/DamageProductModal.js";
+import SalesInvoiceModal from "../modal/SalesInvoiceModal.js";
 import SalesReturnModal from "../modal/SalesReturnModal.js";
 import TotalProductModal from "../modal/TotalProductModal.js";
+import VoucherModal from "../modal/VoucherModal.js";
 
 // Create Sales Return
 export const createSalesReturn = async (req, res) => {
-    const { Client, SalesReturnData, SalesInvoiceReturnDate, Store, SalesFlowRef, Location, Damage } = req.body;
+    const { Client, InvoiceRef, SalesReturnData, SalesInvoiceReturnDate, Store, Location, Damage } = req.body;
 
     try {
 
@@ -28,9 +30,8 @@ export const createSalesReturn = async (req, res) => {
             SalesInvoiceReturnDate,
             PostStatus: false,
             Store,
-            SalesFlowRef,
             Location,
-            Damage,
+            InvoiceRef,
         });
 
         res.status(201).json(newReturn);
@@ -98,9 +99,12 @@ export const deleteSalesReturn = async (req, res) => {
 // Post/Unpost Sales Return
 export const postSalesReturn = async (req, res) => {
     const { id } = req.params;
-    const { status, SalesReturnData, Location, Store, Condition } = req.body;
+    const { status, SalesReturnData, Location, Store, AccountsData, InvoiceRef } = req.body;
 
     try {
+
+        const invoice = await SalesInvoiceModal.findOne({ SalesInvoice: InvoiceRef });
+
         const salesReturn = await SalesReturnModal.findById(id);
         if (!salesReturn) {
             return res.status(404).json({ success: false, message: "Sales return not found" });
@@ -110,172 +114,115 @@ export const postSalesReturn = async (req, res) => {
             if (salesReturn.PostStatus) {
                 return res.status(400).json({ success: false, message: "Return already posted" });
             }
-            console.log(Condition)
-            if (Condition == "Damage") {
-                console.log("Damage ")
-                const bulkOps = SalesReturnData.map(item => ({
-                    updateOne: {
-                        filter: {
-                            ProductName: item.product,
-                            Location,
-                            Store
-                        },
-                        update: {
-                            $inc: {
-                                TotalQuantity: Number(item.totalBox) || 0,
-                                Amount: (Number(item.netAmunt) || 0)
-                            },
-                            $setOnInsert: {
-                                ProductName: item.product,
-                                Location,
-                                Store
-                            }
-                        },
-                        upsert: true
+            let totalLessAmount = 0;  // Track total deduction
+            let totalAddAmount = 0;  // Track total amount to add back
 
-                    }
-                }));
+            for (const returnItem of SalesReturnData) {
+                console.log(invoice)
+                const index = invoice.SalesData.findIndex(sd =>
+                    String(sd.product) === String(returnItem.product) &&
+                    String(sd.id) === String(returnItem.id)
+                );
 
-                await DamageProductModal.bulkWrite(bulkOps);
-                for (const item of SalesReturnData) {
-                    const product = await DamageProductModal.findOne({
+                if (index !== -1) {
+                    const oldDelivered = Number(invoice.SalesData[index].Delivered) || 0;
+                    const returnQty = Number(returnItem.return) || 0;
+                    const newDelivered = oldDelivered - returnQty;
+
+                    invoice.SalesData[index].Delivered = newDelivered;
+
+                    const carton = Number(invoice.SalesData[index].carton) || 0;
+                    invoice.SalesData[index].Remain = carton - invoice.SalesData[index].Delivered;
+
+                    // Accumulate the amount to add back
+                    totalAddAmount += parseFloat(returnItem.netAmunt) || 0;
+                }
+            }
+
+            // Update RemainingAmount ONCE after processing all items
+            invoice.RemainingAmount -= totalAddAmount;
+            const all = await SalesInvoiceModal.findOneAndUpdate({ SalesInvoice: invoice.SalesInvoice }, { SalesData: invoice.SalesData })
+            const bulkOps = SalesReturnData.map(item => ({
+                updateOne: {
+                    filter: {
                         ProductName: item.product,
                         Location,
                         Store
-                    });
-
-                    if (product && product.TotalQuantity > 0) {
-                        const avgRate = product.Amount / product.TotalQuantity;
-                        await DamageProductModal.updateOne(
-                            { _id: product._id },
-                            { $set: { AvgRate: avgRate } }
-                        );
-                    }
-                }
-                await SalesReturnModal.findByIdAndUpdate(id, { PostStatus: true });
-
-                return res.status(200).json({
-                    success: true,
-                    message: "Return posted and stock added successfully"
-                });
-
-            }
-            else {
-                console.log("first")
-                const bulkOps = SalesReturnData.map(item => ({
-                    updateOne: {
-                        filter: {
+                    },
+                    update: {
+                        $inc: {
+                            TotalQuantity: Number(item.totalBox) || 0,
+                            Amount: (Number(item.netAmunt) || 0)
+                        },
+                        $setOnInsert: {
                             ProductName: item.product,
                             Location,
                             Store
-                        },
-                        update: {
-                            $inc: {
-                                TotalQuantity: Number(item.totalBox) || 0,
-                                Amount: (Number(item.netAmunt) || 0)
-                            },
-                            $setOnInsert: {
-                                ProductName: item.product,
-                                Location,
-                                Store
-                            }
-                        },
-                        upsert: true
-
-                    }
-                }));
-
-                await TotalProductModal.bulkWrite(bulkOps);
-                for (const item of SalesReturnData) {
-                    const product = await TotalProductModal.findOne({
-                        ProductName: item.product,
-                        Location,
-                        Store
-                    });
-
-                    if (product && product.TotalQuantity > 0) {
-                        const avgRate = product.Amount / product.TotalQuantity;
-                        await TotalProductModal.updateOne(
-                            { _id: product._id },
-                            { $set: { AvgRate: avgRate } }
-                        );
-                    }
+                        }
+                    },
+                    upsert: true
                 }
-                await SalesReturnModal.findByIdAndUpdate(id, { PostStatus: true });
-
-                return res.status(200).json({
-                    success: true,
-                    message: "Return posted and stock added successfully"
+            }));
+            await TotalProductModal.bulkWrite(bulkOps);
+            // ✅ Step 3: AvgRate update
+            for (const item of SalesReturnData) {
+                const product = await TotalProductModal.findOne({
+                    ProductName: item.product,
+                    Location,
+                    Store
                 });
-
+                if (product && product.TotalQuantity > 0) {
+                    const avgRate = product.Amount / product.TotalQuantity;
+                    await TotalProductModal.updateOne(
+                        { _id: product._id },
+                        { $set: { AvgRate: avgRate } }
+                    );
+                }
             }
+
+            await SalesReturnModal.findByIdAndUpdate(id, { PostStatus: true });
+            await VoucherModal.create(AccountsData)
+            return res.status(200).json({
+                success: true,
+                message: "Return posted, Delivered qty updated, and stock adjusted successfully"
+            });
 
 
         } else {
-            // Already unposted?
+            const invoice = await SalesInvoiceModal.findOne({ SalesInvoice: InvoiceRef });
             if (!salesReturn.PostStatus) {
                 return res.status(400).json({ success: false, message: "Return not posted yet" });
             }
-             if (Condition == "Damage") {
-                const stockChecks = await Promise.all(
-                SalesReturnData.map(async item => {
-                    const product = await DamageProductModal.findOne({
-                        ProductName: item.product,
-                        Location,
-                        Store
-                    });
-                    return { product, item };
-                })
-            );
+            let totalAddAmount = 0;  // Track total amount to add back
 
-            const insufficientStock = stockChecks.filter(({ product, item }) =>
-                !product || (product.TotalQuantity || 0) < (item.totalBox || 0)
-            );
+            for (const returnItem of SalesReturnData) {
+                const index = invoice.SalesData.findIndex(sd =>
+                    String(sd.product) === String(returnItem.product) &&
+                    String(sd.id) === String(returnItem.id)
+                );
 
-            if (insufficientStock.length > 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Insufficient stock to unpost return",
-                    errors: insufficientStock.map(({ product, item }) =>
-                        !product
-                            ? { productId: item.product, message: "Product not found" }
-                            : {
-                                product: product.ProductName,
-                                available: product.TotalQuantity,
-                                tryingToDeduct: item.totalBox
-                            }
-                    )
-                });
+                if (index !== -1) {
+                    const oldDelivered = Number(invoice.SalesData[index].Delivered) || 0;
+                    const returnQty = Number(returnItem.return) || 0;
+                    const newDelivered = oldDelivered + returnQty;
+
+                    invoice.SalesData[index].Delivered = newDelivered;
+
+                    const carton = Number(invoice.SalesData[index].carton) || 0;
+                    invoice.SalesData[index].Remain = carton - invoice.SalesData[index].Delivered;
+
+                    // Accumulate the amount to add back
+                    totalAddAmount += parseFloat(returnItem.netAmunt) || 0;
+                }
             }
 
-            // Prepare rollback bulk operations
-            const bulkOps = SalesReturnData.map(item => ({
-                updateOne: {
-                    filter: {
-                        ProductName: item.product,
-                        Location,
-                        Store,
-                        TotalQuantity: { $gte: item.totalBox } // extra safety
-                    },
-                    update: {
-                        $inc: {
-                            TotalQuantity: -Number(item.totalBox) || 0,
-                            Amount: -(Number(item.netAmunt) || 0)
-                        }
-                    }
-                }
-            }));
+            // Update RemainingAmount ONCE after processing all items
+            invoice.RemainingAmount += totalAddAmount;
+            const all = await SalesInvoiceModal.findOneAndUpdate({ SalesInvoice: invoice.SalesInvoice }, { SalesData: invoice.SalesData })
+            console.log("invoice update hogai", invoice)
 
-            await DamageProductModal.bulkWrite(bulkOps);
-            await SalesReturnModal.findByIdAndUpdate(id, { PostStatus: false });
-
-            return res.status(200).json({
-                success: true,
-                message: "Return unposted and stock reverted successfully"
-            });
-             }
-             else {
-                 const stockChecks = await Promise.all(
+            // ✅ Step 2: Stock decrement (existing logic)
+            const stockChecks = await Promise.all(
                 SalesReturnData.map(async item => {
                     const product = await TotalProductModal.findOne({
                         ProductName: item.product,
@@ -306,36 +253,31 @@ export const postSalesReturn = async (req, res) => {
                 });
             }
 
-            // Prepare rollback bulk operations
             const bulkOps = SalesReturnData.map(item => ({
                 updateOne: {
                     filter: {
                         ProductName: item.product,
                         Location,
                         Store,
-                        TotalQuantity: { $gte: item.totalBox } // extra safety
+                        TotalQuantity: { $gte: item.totalBox }
                     },
                     update: {
                         $inc: {
-                            TotalQuantity: -Number(item.totalBox) || 0,
+                            TotalQuantity: -(Number(item.totalBox) || 0),
                             Amount: -(Number(item.netAmunt) || 0)
                         }
                     }
                 }
             }));
-
             await TotalProductModal.bulkWrite(bulkOps);
-            await SalesReturnModal.findByIdAndUpdate(id, { PostStatus: false });
 
+            const data = await SalesReturnModal.findByIdAndUpdate(id, { PostStatus: false });
+             await VoucherModal.findOneAndDelete({VoucherNumber : `Slr${data.SalesReturnNumber}`})
             return res.status(200).json({
                 success: true,
-                message: "Return unposted and stock reverted successfully"
+                message: "Return unposted, Delivered qty restored, and stock reverted successfully"
             });
-             }
-            // Check stock availability for rollback
-            
         }
-
     } catch (error) {
         console.error("Sales return posting error:", error);
         return res.status(500).json({
@@ -343,6 +285,7 @@ export const postSalesReturn = async (req, res) => {
             message: "An error occurred while processing the return"
         });
     }
+
 };
 
 
@@ -401,4 +344,5 @@ export const createSalesInvoiceReturnBulk = async (req, res) => {
         });
     }
 };
+
 
