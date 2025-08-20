@@ -8,7 +8,7 @@ export const userRegister = async (req, res) => {
     try {
         const { firstname, email, password, Cpassword, lastname, phoneNumber, createdBy, createDate, selectRole, Location, Store, Vendor , userType } = req.body;
         if (!firstname || !password || !Cpassword || !lastname || !phoneNumber) {
-            return res.status(400).send("All fields are required");
+            return res.status(400).send("All fields are required", firstname, email, password, Cpassword, lastname, phoneNumber, createdBy, createDate, selectRole, Location, Store, Vendor , userType) ;
         }
 
         const hashPassword1 = await hashPassword(password);
