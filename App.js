@@ -24,6 +24,9 @@ import SalesInvoiceRouter from "./Routes/SalesInvoiceRoute.js";
 import PurchaseReturnRouter from "./Routes/PurchaseReturnRoute.js"
 import SalesInvoiceReturnRouter from "./Routes/SalesInvoiceReturnRoute.js"
 import AccountOpeningRouter from "./Routes/AccountsOpeningRoutes.js"
+import InventoryReportRoute from "./Routes/InvetoryReportRoute.js"
+import AdministrativeRouter from "./Routes/AdministrativeRoutes.js"
+import VoucherRouter from "./Routes/VoucherRoute.js"
 
 const Router = express.Router()
 const app = express()
@@ -53,3 +56,6 @@ export const SaleOrderDcRoute = app.use("/dcOrder", SaleOrderDcRouter);
 export const PurchaseReturnRoute = app.use("/purchaseReturn", PurchaseReturnRouter);
 export const SalesInvoiceReturnRoute = app.use("/salesInvoiceReturn", SalesInvoiceReturnRouter);
 export const SalesInvoiceRoute = app.use("/saleInvoice", SalesInvoiceRouter);
+export const InventoryReportRou =app.use("/inventoryReport", InventoryReportRoute);
+export const AdministrativeRoute = app.use("/administrative", AdministrativeRouter);
+export const VoucherRoute = app.use("/voucher", VoucherRouter);
