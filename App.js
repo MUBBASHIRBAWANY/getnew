@@ -27,6 +27,8 @@ import AccountOpeningRouter from "./Routes/AccountsOpeningRoutes.js"
 import InventoryReportRoute from "./Routes/InvetoryReportRoute.js"
 import AdministrativeRouter from "./Routes/AdministrativeRoutes.js"
 import VoucherRouter from "./Routes/VoucherRoute.js"
+import CityRouter from "./Routes/CityRoute.js"
+import GernalLagerRouter from "./Routes/GernalLagerReportRoutes.js"
 
 const Router = express.Router()
 const app = express()
@@ -59,3 +61,6 @@ export const SalesInvoiceRoute = app.use("/saleInvoice", SalesInvoiceRouter);
 export const InventoryReportRou =app.use("/inventoryReport", InventoryReportRoute);
 export const AdministrativeRoute = app.use("/administrative", AdministrativeRouter);
 export const VoucherRoute = app.use("/voucher", VoucherRouter);
+export const CityRoute = app.use("/city", CityRouter);
+export const GernalLagerRoute = app.use("/generalLedger", GernalLagerRouter);
+
