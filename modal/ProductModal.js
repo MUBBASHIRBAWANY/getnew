@@ -11,6 +11,10 @@ const productSchema = new mongoose.Schema({
         required: true
 
     },
+    OpeningRate: {
+        type: String,
+        required: true
+    },
     TPPurchase: {
         type: String,
         required: true

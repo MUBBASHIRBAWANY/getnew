@@ -2,17 +2,12 @@
 import SalesInvoiceModal from "../modal/SalesInvoiceModal.js";
 import TotalProductModal from "../modal/TotalProductModal.js";
 import OpeningInventoryModal from "../modal/OpeningInventoryModal.js"
-import SaleOrderDcModal from "../modal/SaleOrderDcModal.js";
-import VoucherModal from "../modal/VoucherModal.js";
 
 
 export const createSalesInvoice = async (req, res) => {
-    const { Client, SaleInvoiceData, SaleInvoiceDate, SalesFlowRef, Store, Location, RemainingAmount, TotalAmount, DcNumber, LessAccount, AddAccount, LessAmount, AddAmount } = req.body
+    const { Client, SaleInvoiceData, SaleInvoiceDate, SalesFlowRef, Store, Location , RemainingAmount, TotalAmount } = req.body
+    
 
-    console.log(LessAccount,
-        AddAccount,
-        LessAmount,
-        AddAmount, "Less Account")
     try {
         const code = await SalesInvoiceModal.findOne().sort({ _id: -1 }).limit(1)
         console.log(code)
@@ -55,8 +50,9 @@ export const createSalesInvoice = async (req, res) => {
                 )
             });
         }
+
         else {
-            const invoicePayload = {
+            const data = await SalesInvoiceModal.create({
                 SalesInvoice: nextCode,
                 SalesData: SaleInvoiceData,
                 Client,
@@ -66,22 +62,9 @@ export const createSalesInvoice = async (req, res) => {
                 Store,
                 Location,
                 RemainingAmount,
-                TotalAmount,
-                DcNumber,
-            };
+                TotalAmount
 
-            if (LessAccount) {
-                invoicePayload.LessAccount = LessAccount;
-                invoicePayload.LessAmount = LessAmount;
-            }
-
-            if (AddAccount) {
-                invoicePayload.AddAccount = AddAccount;
-                invoicePayload.AddAmount = AddAmount;
-            }
-
-            const data = await SalesInvoiceModal.create(invoicePayload);
-            await SaleOrderDcModal.findOneAndUpdate({ DcNumber: DcNumber }, { Status: "Serviced" })
+            })
 
             res.status(200).send(data)
         }
@@ -118,7 +101,7 @@ export const getLimitedSaleInvoice = async (req, res) => {
 
 export const UpdateSalesInvoice = async (req, res) => {
     const { id } = req.params
-    const { Client, SaleInvoiceData, SaleInvoiceDate, SalesFlowRef, LessAccount, AddAccount, LessAmount, AddAmount } = req.body
+    const { Client, SaleInvoiceData, SaleInvoiceDate, SalesFlowRef } = req.body
     try {
         const stockChecks = await Promise.all(
             SaleInvoiceData.map(async item => {
@@ -154,11 +137,7 @@ export const UpdateSalesInvoice = async (req, res) => {
                 Client,
                 SalesInvoiceDate: SaleInvoiceDate,
                 SalesFlowRef,
-                PostStatus: false,
-                LessAccount,
-                AddAccount,
-                LessAmount,
-                AddAmount
+                PostStatus: false
             })
             res.status(200).send(data)
         }
@@ -182,8 +161,7 @@ export const deleteSaleInvoice = async (req, res) => {
         }
         else {
             const data = await SalesInvoiceModal.findByIdAndDelete(id)
-            await SaleOrderDcModal.findOneAndUpdate({ DcNumber: findTrue[0].DcNumber }, { Status: "true" })
-            res.status(200).send("invoice Delete");
+            res.status(200).send("invoice Posted");
         }
 
 
@@ -194,9 +172,16 @@ export const deleteSaleInvoice = async (req, res) => {
 }
 
 export const postSalesinvoice = async (req, res) => {
-    const { status, AccountsData, VoucherNumber } = req.body;
+    const { status, data: SalesData, Location, Store, SalesInvoice } = req.body;
     const { id } = req.params;
-    console.log(status, VoucherNumber)
+    console.log(SalesInvoice)
+
+    if (!SalesData || !Array.isArray(SalesData)) {
+        return res.status(400).json({
+            success: false,
+            message: "Missing or invalid Sales data"
+        });
+    }
 
     try {
         if (status === true) {
@@ -208,9 +193,66 @@ export const postSalesinvoice = async (req, res) => {
                     message: "Invoice already posted"
                 });
             }
+            // Fetch all related products
+            const stockChecks = await Promise.all(
+                SalesData.map(async (item) => {
+                    const product = await TotalProductModal.findOne({
+                        ProductName: item.product,
+                        Location,
+                        Store
+                    });
+                    return { product, item };
+                })
+            );
 
+            // Check for stock and avg rate
+            const insufficientStock = stockChecks.filter(({ product, item }) =>
+                !product || (product.TotalQuantity || 0) < (item.totalBox || 0)
+            );
+
+            if (insufficientStock.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Insufficient stock to post invoice",
+                    errors: insufficientStock.map(({ product, item }) =>
+                        !product
+                            ? { productId: item.product, message: "Product not found" }
+                            : {
+                                product: product.ProductName,
+                                available: product.TotalQuantity,
+                                tryingToSell: item.totalBox
+                            }
+                    )
+                });
+            }
+
+            // Build bulk operations with calculated amount
+            const bulkOps = stockChecks.map(({ product, item }) => {
+                const avgRate = product.AvgRate || 0;
+                const calculatedAmount = (item.totalBox || 0) * avgRate;
+
+
+                return {
+                    updateOne: {
+                        filter: {
+                            ProductName: item.product,
+                            Location,
+                            Store,
+                            TotalQuantity: { $gte: item.totalBox }
+                        },
+                        update: {
+                            $inc: {
+                                TotalQuantity: -Number(item.totalBox) || 0,
+                                Amount: -calculatedAmount
+                            }
+                        }
+                    }
+                };
+            });
+
+            await TotalProductModal.bulkWrite(bulkOps);
             await SalesInvoiceModal.findByIdAndUpdate(id, { PostStatus: true });
-            await VoucherModal.create(AccountsData[0])
+
             return res.status(200).json({
                 success: true,
                 message: "Invoice posted, stock reduced, and amount updated"
@@ -224,12 +266,47 @@ export const postSalesinvoice = async (req, res) => {
                     message: "Invoice already Unposted"
                 });
             }
+            const stockData = await Promise.all(
+                SalesData.map(async (item) => {
+                    const product = await TotalProductModal.findOne({
+                        ProductName: item.product,
+                        Location,
+                        Store
+                    });
+                    return { product, item };
+                })
+            );
+
+            const bulkOps = stockData.map(({ product, item }) => {
+                const avgRate = product?.AvgRate || 0;
+                const restoreAmount = (item.totalBox || 0) * avgRate;
+
+                return {
+                    updateOne: {
+                        filter: {
+                            ProductName: item.product,
+                            Location,
+                            Store
+                        },
+                        update: {
+                            $inc: {
+                                TotalQuantity: Number(item.totalBox) || 0,
+                                Amount: restoreAmount
+                            },
+                            $setOnInsert: {
+                                ProductName: item.product,
+                                Location,
+                                Store
+                            }
+                        },
+                        upsert: true
+                    }
+                };
+            });
+
+            await TotalProductModal.bulkWrite(bulkOps);
             await SalesInvoiceModal.findByIdAndUpdate(id, { PostStatus: false });
-            const voucher = await VoucherModal.find({ VoucherNumber: VoucherNumber })
-            console.log(voucher)
-            if (voucher) {
-                await VoucherModal.findByIdAndDelete(voucher[0]._id)
-            }
+
             return res.status(200).json({
                 success: true,
                 message: "Invoice unposted, stock and amount restored"
@@ -276,10 +353,10 @@ export const BulkpostSalesinvoice = async (req, res) => {
 
             if (status === true && PostStatus === true) continue;
             if (status === false && PostStatus === false) continue;
-
+            
             const stockChecks = await Promise.all(
                 SalesData.map(async (item) => {
-                    console.log("product of item", item)
+                    console.log("product of item" , item)
                     const product = await TotalProductModal.findOne({
                         ProductName: item.product,
                         Store,
@@ -288,8 +365,8 @@ export const BulkpostSalesinvoice = async (req, res) => {
                     return { product, item };
                 })
             );
-
-
+            
+            
             if (status === true) {
                 const insufficient = stockChecks.filter(({ product, item }) => {
                     !product || (product.TotalQuantity || 0) < (item.totalBox || 0)
@@ -314,13 +391,13 @@ export const BulkpostSalesinvoice = async (req, res) => {
                 }
 
                 const bulkOps = stockChecks.map((item) => {
-                    console.log(item?.product?.AvgRate, item.item.totalBox, Location,
-                        Store,
-                        item.product?.ProductName
-                    )
+                    console.log(item?.product?.AvgRate , item.item.totalBox,    Location,
+                                Store,
+                                item.product?.ProductName
+                             )
                     const avgRate = item?.product?.AvgRate || 0;
                     const calculatedAmount = (item.item.totalBox || 0) * avgRate;
-                    console.log(item.item.totalBox, item.product?.ProductName, item?.product?.AvgRate, Location, Store)
+                             console.log(item.item.totalBox, item.product?.ProductName , item?.product?.AvgRate , Location , Store)
 
                     return {
                         updateOne: {
@@ -328,11 +405,11 @@ export const BulkpostSalesinvoice = async (req, res) => {
                                 ProductName: item.product?.ProductName,
                                 Location,
                                 Store,
-                                TotalQuantity: { $gte: item.item.totalBox }
+                                TotalQuantity: { $gte:  item.item.totalBox }
                             },
                             update: {
                                 $inc: {
-                                    TotalQuantity: -Number(item.item.totalBox) || 0,
+                                    TotalQuantity: -Number( item.item.totalBox) || 0,
                                     Amount: -calculatedAmount
                                 }
                             }
@@ -343,8 +420,8 @@ export const BulkpostSalesinvoice = async (req, res) => {
                 await TotalProductModal.bulkWrite(bulkOps);
                 invoice.PostStatus = true;
                 await invoice.save();
-
-
+                
+                
 
 
 
@@ -472,14 +549,3 @@ export const getOnlyRemain = async (req, res) => {
         res.status(400).send("some thing went wrong");
     }
 };
-
-export const getInvoiceByClient = async (req , res) => {
-    const {Client} = req.params
-    try {
-        const data = await SalesInvoiceModal.find({Client : Client , RemainingAmount: { $ne: 0, $exists: true } , PostStatus : true})
-        console.log(data)
-        res.status(200).send({ status: true, data });
-    } catch (err) {
-        res.status(400).send("some thing went wrong");
-    }
-}

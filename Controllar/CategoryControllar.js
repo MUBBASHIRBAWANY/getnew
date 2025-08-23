@@ -1,5 +1,5 @@
 import CategoryModal from "../modal/CategoryModal.js";
-import VendorModal from "../modal/Vendor_Modal.js"
+import VendorModal from "../modal/VendorModal.js"
 export const CreateCategory = async (req, res) => {
     try {
         const data = await CategoryModal.create(req.body)

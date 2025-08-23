@@ -59,38 +59,13 @@ const AdministrativeSchema = new mongoose.Schema({
     WithholdingTax: {
         type: String,
     },
-    COSTOFSALES: {
+    COSTOFSALES : {
         type: String,
     },
-    DAMAGEEXPIRECLAIM: {
-        type: String,
-
-    },
-    Retainedearnings: {
+    DAMAGEEXPIRECLAIM : {
         type: String,
 
-    },
-    Assets: {
-        type: String,
-        required: true
-    },
-    liabilities: {
-        type: String,
-        required: true
-    },
-    Capital: {
-        type: String,
-        required: true
-    },
-    Expenses: {
-        type: String,
-        required: true
-    },
-    Revenue: {
-        type: String,
-        required: true
-    },
-
+    }
 })
 
 

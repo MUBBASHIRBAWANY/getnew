@@ -1,4 +1,4 @@
-import VendorModal from "../modal/Vendor_Modal.js"
+import VendorModal from "../modal/VendorModal.js"
 import ChartofAccountsModal from "../modal/ChartofAccountsModal.js"
 
 

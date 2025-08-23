@@ -15,10 +15,7 @@ const voucherSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    DebitAccount: {
-        type: String,
-    },
-    CreditAccount: {
+    VoucherMainAccount: {
         type: String,
     },
     VoucharData: {
@@ -27,16 +24,17 @@ const voucherSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        
+        default: false,
     },
-   
-    Cheque: {
+    PaidFor: {
         type: String,
     },
-    Remarks :  {
+    ChequeNumber: {
         type: String,
     },
-   
+    ChequeBook :{
+        type: String,
+    },
     TotalDebit: {
         type: String,
 
@@ -44,6 +42,9 @@ const voucherSchema = new mongoose.Schema({
     TotalCredit: {
         type: String,
 
+    },
+    PaidTo: {
+        type: String,
     },
 
 

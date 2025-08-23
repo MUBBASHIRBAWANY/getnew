@@ -82,6 +82,6 @@ export const getAuthontication = async function (val) {
 
 
 
-const UserModel = mongoose.model('user', userSchema)
+const userModel = mongoose.model('user', userSchema)
 
-export default UserModel
+export default userModel

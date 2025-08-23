@@ -1,7 +1,0 @@
-"rules": {
-  "spellcheck/spell-checker": ["warn", {
-    "patterns": ["/**"],
-    "ignorePatterns": ["/Controllers/", "/Routes/"],
-    "words": ["Controller", "Routes"]
-  }]
-}

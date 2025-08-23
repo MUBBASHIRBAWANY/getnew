@@ -1,13 +1,14 @@
 import express from "express";
-import { createVendor, deleteVendor, getAllVendor, getLastVendorCode, PushBulkDataInVendor, updateVendor } from "../Controllar/VendorControllar.js";
+import { createVendor, deleteVendor, getAllVendor, getLastVendorCode, PushBulkDataInVendor, updateVendor } from "../Controllar/VendorConrolar.js";
 
 
-export  const VendorRouter = express.Router()
+const VendorROuter = express.Router()
 
-VendorRouter.post('/', createVendor)
-VendorRouter.get('/', getAllVendor)
-VendorRouter.get('/lastVendor', getLastVendorCode)
-VendorRouter.put('/updateVendor/:id', updateVendor)
-VendorRouter.delete('/deleteVendor/:id', deleteVendor)
-VendorRouter.post('/AddBulkVendor', PushBulkDataInVendor)
+VendorROuter.post('/', createVendor)
+VendorROuter.get('/', getAllVendor)
+VendorROuter.get('/lastVendor', getLastVendorCode)
+VendorROuter.put('/updateVendor/:id', updateVendor)
+VendorROuter.delete('/deleteVendor/:id', deleteVendor)
+VendorROuter.post('/AddBulkVendor', PushBulkDataInVendor)
 
+export default VendorROuter
