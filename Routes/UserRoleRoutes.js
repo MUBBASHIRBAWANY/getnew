@@ -1,13 +1,13 @@
 import express from "express";
-import { CreateRole, DeleteRole, GetAllUserRoleByID, GetAllUserRoles, RoleUpdate } from "../controllar/UserRoleControllar.js";
+import { createRole, DeleteRole, getAllUserRoleByID, getAllUserRoles, RoleUpdate } from "../Controllar/RoleControllar.js";
 import CheckRights from "../Midelware/CheckRights.js";
 const app = express()
 const UserRoleRouter = express.Router()
 
 
-UserRoleRouter.post('/',  CreateRole )
-UserRoleRouter.get('/',  GetAllUserRoles )
-UserRoleRouter.get('/role/:id',  GetAllUserRoleByID )
+UserRoleRouter.post('/',  createRole )
+UserRoleRouter.get('/',  getAllUserRoles )
+UserRoleRouter.get('/role/:id',  getAllUserRoleByID )
 UserRoleRouter.put('/rolesUpdaate/:id' , RoleUpdate)
 UserRoleRouter.delete('/DeleteRole/:id', DeleteRole)
 
