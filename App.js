@@ -30,6 +30,7 @@ import VoucherRouter from "./Routes/VoucherRoute.js"
 import CityRouter from "./Routes/CityRoute.js"
 import GernalLagerRouter from "./Routes/GernalLagerReportRoutes.js"
 
+
 const Router = express.Router()
 const app = express()
 app.use(cors());
