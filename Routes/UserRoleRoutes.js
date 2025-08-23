@@ -1,5 +1,5 @@
 import express from "express";
-import { createRole, DeleteRole, getAllUserRoleByID, getAllUserRoles, RoleUpdate } from "../Controllar/RoleControllar.js";
+import { createRole, DeleteRole, getAllUserRoleByID, getAllUserRoles, RoleUpdate } from "../Controllar/UserRoleControllar.js";
 import CheckRights from "../Midelware/CheckRights.js";
 const app = express()
 const UserRoleRouter = express.Router()
