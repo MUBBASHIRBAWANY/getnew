@@ -1,14 +1,14 @@
 import express from "express";
-import userModel, { comparePassword, getAuthontication, hashPassword } from "../modal/UserModal.js";
+import UserModel, { comparePassword, getAuthontication, hashPassword } from "../modal/UserModal.js";
 import jwt from "jsonwebtoken";
 
-const User = userModel
-export const userRegister = async (req, res) => {
+const User = UserModel
+export const UserRegister = async (req, res) => {
     console.log(req.body)
     try {
         const { firstname, email, password, Cpassword, lastname, phoneNumber, createdBy, createDate, selectRole, Location, Store, Vendor , userType } = req.body;
         if (!firstname || !password || !Cpassword || !lastname || !phoneNumber) {
-            return res.status(400).send(firstname, email, password, Cpassword, lastname, phoneNumber, createdBy, createDate, selectRole, Location, Store, Vendor , userType) ;
+            return res.status(400).send("All fields are required");
         }
 
         const hashPassword1 = await hashPassword(password);
@@ -40,7 +40,7 @@ export const userRegister = async (req, res) => {
 }
 
 
-export const userLogin = async (req, res) => {
+export const UserLogin = async (req, res) => {
     try {
         const { firstname, password } = req.body;
         console.log(req.body)
@@ -72,7 +72,7 @@ export const userLogin = async (req, res) => {
         res.status(500).send(`Server Error: ${err.message}`);
     }
 };
-export const userProfile = async (req, res) => {
+export const UserProfile = async (req, res) => {
 
     try {
         const token = req.body.authorization
@@ -97,7 +97,7 @@ export const userProfile = async (req, res) => {
 };
 
 
-export const getUserById = async (req, res) => {
+export const GetUserById = async (req, res) => {
     const { id } = req.params
     try {
         const user = await User.findById(id);
@@ -113,7 +113,7 @@ export const getUserById = async (req, res) => {
     }
 }
 
-export const updateUser = async (req, res) => {
+export const UpdateUser = async (req, res) => {
     const { id } = req.params
     console.log(req.body)
     const { firstname, email, lastname, phoneNumber, password, Cpassword, updatedBy, updateDate, selectRole, Location, Store, Vendor } = req.body
@@ -155,7 +155,7 @@ export const updateUser = async (req, res) => {
     }
 }
 
-export const deleteUser = async (req, res) => {
+export const DeleteUser = async (req, res) => {
     const { id } = req.params
     try {
         const user = await User.findByIdAndDelete(id);
@@ -171,7 +171,7 @@ export const deleteUser = async (req, res) => {
     }
 }
 
-export const getUsers = async (req, res) => {
+export const GetUsers = async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).send({ status: true, data: users });

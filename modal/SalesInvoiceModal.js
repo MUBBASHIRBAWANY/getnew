@@ -21,10 +21,7 @@ const SalesInvoiceSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    SalesFlowRef: {
-        type: String,
-        required: true
-    },
+    
     PostStatus: {
         type: Boolean,
         required: true
@@ -49,6 +46,24 @@ const SalesInvoiceSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    DcNumber : {
+        type: String,
+        required: true
+
+    },
+    LessAccount : {
+        type: String,
+    },
+    AddAccount : {
+        type: String,
+    },
+    LessAmount : {
+        type: String,
+    },
+    AddAmount : {
+        type: String,
+    },
+
 })
 
 const SalesInvoiceModal = mongoose.model('SalesInvoice', SalesInvoiceSchema)

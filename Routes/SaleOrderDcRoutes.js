@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateSaleOrderDC, DeleteSaleOrderDC, GetAllSaleOrderDC, LastSaleOrderDC, updateOrderStatusDC, UpdateSaleOrderDC } from "../Controllar/SaleOrderDcControllar.js";
+import { CreateSaleOrderDC, DeleteSaleOrderDC, GetAllSaleOrderDC, LastSaleOrderDC, OnlyTrue, updateOrderStatusDC, UpdateSaleOrderDC } from "../Controllar/SaleOrderDcControllar.js";
 const SaleOrderDcRouter = express.Router()
 
 
@@ -9,6 +9,6 @@ SaleOrderDcRouter.get("/", GetAllSaleOrderDC)
 SaleOrderDcRouter.get("/lastcode", LastSaleOrderDC)
 SaleOrderDcRouter.delete("/deleteSaleOrder/:id", DeleteSaleOrderDC)
 SaleOrderDcRouter.put("/ChangeStatus/:id" , updateOrderStatusDC)
-
+SaleOrderDcRouter.get("/OnlyTrue" , OnlyTrue)
 
 export default SaleOrderDcRouter

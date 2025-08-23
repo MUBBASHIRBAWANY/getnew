@@ -4,6 +4,7 @@ import VoucherModal from "../modal/VoucherModal.js";
 
 const GernalLager = async (req, res) => {
     const { Account, startDate, endDate, Store } = req.query
+    console.log(req.query)
     const StoreArray = [...Store?.split(",")];
     const AccountArray = [...Account?.split(",")]
     const firstOpneing = await AccountOpeningBalanceModal.find({
@@ -11,6 +12,11 @@ const GernalLager = async (req, res) => {
         DateEnd: { $gte: startDate }
     });
     const nextDate = firstOpneing[0]?.DateStart
+    
+    const Opening = firstOpneing[0]?.AccountsData.map((item)=>({
+        ...item,
+        Type : "Opening"
+    }))
     const previosdate = new Date(startDate);
     previosdate.setDate(previosdate.getDate() - 1);
     const before = previosdate.toISOString().split('T')[0];
@@ -37,7 +43,8 @@ const GernalLager = async (req, res) => {
                         store: "$VoucharData.store",
                         Debit: "$VoucharData.Debit",
                         Type: "Voucher",
-                        Chq: "$ChequeNumber"
+                        Chq: "$ChequeNumber",
+                        ClientRef2 : "$VoucharData.ClientRef2"
                     },
                 },
             },
@@ -52,7 +59,8 @@ const GernalLager = async (req, res) => {
                     Debit: "$_id.Debit",
                     Type: "Voucher",
                     store: { $ifNull: ["$_id.store", "0"] },
-                    Chq: "$_id.Chq"
+                    Chq: "$_id.Chq",
+                    ClientRef2 : "$_id.ClientRef2"
                 },
             },
         ]);
@@ -97,24 +105,23 @@ const GernalLager = async (req, res) => {
                 },
             },
         ]);
-        const data = mergedVOucherData.concat(mergedVOucherDataBefore)
-        if (Account || Store) {
+        
+        const data = mergedVOucherData.concat(mergedVOucherDataBefore).concat(Opening)
+        console.log(data.filter((item)=> item.Type  === 'Opening'))
+        if (Account) {
             const wholedata = data.filter((item) => {
                 const AccountMatch = AccountArray.includes(item?.Account)
-                const storeMatch = StoreArray.includes(item?.store);
-                console.log(storeMatch)
-                return AccountMatch && storeMatch;
+                return AccountMatch 
             });
 
-            console.log(wholedata)
             res.json(wholedata);
         }
         else {
+
             res.status(200).send(data)
         }
     } catch (err) {
         console.log(err)
-
         res.status(500).send("Some thing went wrong", err)
     }
 

@@ -21,10 +21,6 @@ const SalesInvoiceReturnSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    SalesFlowRef: {
-        type: String,
-        required: true
-    },
     PostStatus: {
         type: Boolean,
         required: true
@@ -37,11 +33,11 @@ const SalesInvoiceReturnSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    Condition : {
+    InvoiceRef : {
         type: String,
         required: true
     }
- 
+   
 })
 
 const SalesInvoiceRetunModal = mongoose.model('SalesInvoiceReturn', SalesInvoiceReturnSchema)

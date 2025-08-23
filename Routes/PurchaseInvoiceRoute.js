@@ -1,5 +1,5 @@
 import express from "express";
-import { AddPurchaseInvoiceInbulk, createPurchaseInvoice, deletePurchcaseInvoice, getAllPurchaseInvoice, postPurchaseinvoice, updatePurchaseInvoice } from "../Controllar/PurchaseInvoiceControllar.js";
+import { AddPurchaseInvoiceInbulk, createPurchaseInvoice, deletePurchcaseInvoice, getAllPurchaseInvoice, getPurchaseInvoieByVendor, postPurchaseinvoice, updatePurchaseInvoice } from "../Controllar/PurchaseInvoiceControllar.js";
 
 const PurchaseInvoiceRouter = express.Router()
 
@@ -10,6 +10,7 @@ PurchaseInvoiceRouter.put('/PurchaseInvoiceUpdate/:id' , updatePurchaseInvoice)
 PurchaseInvoiceRouter.delete("/PurchaseInvoiceDelete/:id" , deletePurchcaseInvoice)
 PurchaseInvoiceRouter.post('/AddinBulk', AddPurchaseInvoiceInbulk)
 PurchaseInvoiceRouter.put('/Changestatus/:id', postPurchaseinvoice)
+PurchaseInvoiceRouter.get("/InvoiceByVendor/:Vendor",getPurchaseInvoieByVendor)
 
 
 export default PurchaseInvoiceRouter

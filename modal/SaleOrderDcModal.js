@@ -17,10 +17,7 @@ const SaleOrderDcSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    OrderNumber: {
-        type: Array,
-        required: true
-    },
+   
     Location: {
         type: String,
         required: true

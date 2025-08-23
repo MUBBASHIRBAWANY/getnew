@@ -1,8 +1,8 @@
-import RoleModel from "../modal/RoleModal.js";
+import UserRoleModel from "../modal/UserRoleModal.js";
 
 
-const UserRoles = RoleModel
-export const createRole = async (req,res)=>{
+const UserRoles = UserRoleModel
+export const CreateRole = async (req,res)=>{
 
 console.log(req.body)
     const { RoleName, Roles,createdBy,  updatedBy, createDate} = req.body;
@@ -15,7 +15,7 @@ console.log(req.body)
     }
 }
 
-export const getAllUserRoles = async (req,res) =>{
+export const GetAllUserRoles = async (req,res) =>{
     console.log(req)
     try{
         const Roles = await UserRoles.find();
@@ -26,7 +26,7 @@ export const getAllUserRoles = async (req,res) =>{
     }
 }
 
-export const getAllUserRoleByID = async (req,res) =>{
+export const GetAllUserRoleByID = async (req,res) =>{
     const {id} = req.params
     try{
         const Roles = await UserRoles.findById(id);
@@ -60,3 +60,7 @@ export const DeleteRole = async (req, res) =>{
         res.status(500).send(`Server Error: ${err.message}`);
     }
 }
+
+
+
+

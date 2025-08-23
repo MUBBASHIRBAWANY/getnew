@@ -2,6 +2,7 @@ import SaleOrderDcModal from "../modal/SaleOrderDcModal.js"
 import SaleOrderModal from "../modal/SaleOrderModal.js";
 import TotalProductModal from "../modal/TotalProductModal.js";
 import VoucherModal from "../modal/VoucherModal.js";
+import mongoose from "mongoose";
 
 
 export const CreateSaleOrderDC = async (req, res) => {
@@ -38,7 +39,7 @@ export const CreateSaleOrderDC = async (req, res) => {
         }
         else {
             const data = await SaleOrderDcModal.create(req.body)
-            res.status(200).send("data Add")
+            res.status(200).send(data)
         }
 
     }
@@ -48,9 +49,12 @@ export const CreateSaleOrderDC = async (req, res) => {
     }
 }
 
+
+
 export const UpdateSaleOrderDC = async (req, res) => {
     const { DcData, Location, Store } = req.body
     const { id } = req.params
+
     try {
         const stockChecks = await Promise.all(
             DcData.map(async item => {
@@ -168,6 +172,7 @@ export const updateOrderStatusDC = async (req, res) => {
                                 product: product.ProductName,
                                 available: product.TotalQuantity,
                                 tryingToSell: item.Delivered
+
                             }
                     )
                 });
@@ -241,22 +246,25 @@ export const updateOrderStatusDC = async (req, res) => {
                 const remaining = Number(productEntry?.Remaingcarton || 0);
                 const toDeliver = Number(Delivered);
                 const newRemaining = remaining - toDeliver;
-                if (remaining >= toDeliver) {
-                    // Step 2: Decrease remaining carton
+                if (!isNaN(newRemaining)) {
                     await SaleOrderModal.updateOne(
                         {
                             SaleOrderNumber: Order,
-                            "SaleOrderData.product": product
                         },
                         {
                             $set: {
-                                "SaleOrderData.$.Remaingcarton": String(newRemaining) // or keep as number
+                                "SaleOrderData.$[elem].Remaingcarton": newRemaining
                             }
+                        },
+                        {
+                            arrayFilters: [{ "elem.product": product }]
                         }
                     );
 
+                    console.log(`Updated ${Order} - ${product}: ${remaining} - ${toDeliver} = ${newRemaining}`);
                 }
             }
+            const updatedOrders = ProductData.map((item) => item.Order)
             // Step 3: Check if all product of the order are fully delivered (Remaingcarton === 0)
             for (const orderNumber of updatedOrders) {
                 const order = await SaleOrderModal.findOne({ SaleOrderNumber: orderNumber });
@@ -312,12 +320,74 @@ export const updateOrderStatusDC = async (req, res) => {
             OrderDC.Status = false;
             await SaleOrderDcModal.findByIdAndUpdate(id, { Status: false }); // use boolean not string
             await VoucherModal.deleteOne({ VoucherNumber: `Dc${DcNum}` });
-            res.status(200).send("Stock Reverted Successfully");
+            for (const item of ProductData) {
+                const { Order, product, Delivered } = item;
 
+                const orderDoc = await SaleOrderModal.findOne({
+                    SaleOrderNumber: Order,
+                    "SaleOrderData.product": product
+                });
 
+                if (!orderDoc) continue;
+
+                const productEntry = orderDoc.SaleOrderData.find(p => p.product == product);
+                const remaining = Number(productEntry?.Remaingcarton || 0);
+                const toDeliver = Number(Delivered);
+                const newRemaining = remaining + toDeliver;
+
+                if (!isNaN(newRemaining)) {
+                    await SaleOrderModal.updateOne(
+                        {
+                            SaleOrderNumber: Order,
+                        },
+                        {
+                            $set: {
+                                "SaleOrderData.$[elem].Remaingcarton": newRemaining
+                            }
+                        },
+                        {
+                            arrayFilters: [{ "elem.product": product }]
+                        }
+                    );
+
+                    console.log(`Updated ${Order} - ${product}: ${remaining} + ${toDeliver} = ${newRemaining}`);
+                }
+            }
+
+            const updatedOrders = ProductData.map((item) => item.Order)
+
+            for (const orderNumber of updatedOrders) {
+                const order = await SaleOrderModal.findOne({ SaleOrderNumber: orderNumber });
+
+                const isComplete = order.Status === "Complete"
+
+                if (isComplete) {
+                    await SaleOrderModal.updateOne(
+                        { SaleOrderNumber: orderNumber },
+                        { $set: { Status: "false" } }
+                    );
+                }
+            }
+            res.status(200).send("Status Updated")
         }
+
+
+
     }
     catch (err) {
-        console.log(err)
+        res.status(400).send(err)
+    }
+}
+
+
+export const OnlyTrue = async (req, res) => {
+    try {
+        const data = await SaleOrderDcModal.find({ Status: true })
+
+        res.status(200).send({ status: true, data: data })
+
+    } catch (err) {
+        res.status(400).send(err)
+
     }
 }

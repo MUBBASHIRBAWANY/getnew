@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import userRoleModel from '../modal/RoleModal.js'
+import userRoleModel from '../Modal/userRoleModal.js'
 const CheckRights = async (req, res, next) => {
     console.log(req.query)
     try {

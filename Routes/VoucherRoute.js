@@ -1,4 +1,4 @@
-import {createVoucher, getVouchers, getVoucherByCode, updateVoucher, deleteVoucher, createSystemVoucher, getVoucherById, getVoucherByNumber, deleteVoucherByNumber} from '../Controllar/VoucherControllar.js';
+import {createVoucher, getVouchers, getVoucherByCode, updateVoucher, deleteVoucher, createSystemVoucher, getVoucherById, getVoucherByNumber, deleteVoucherByNumber, getOnlyCreditSide, AdjustVoucherInvoice} from '../Controllar/VoucherControllar.js';
 
 
 import express from 'express';
@@ -13,5 +13,6 @@ VoucherRouter.post("/createSystemVoucher" , createSystemVoucher)
 VoucherRouter.get("/getVoucherById/:id", getVoucherById)
 VoucherRouter.get("/getVoucherByNumber/:VoucherNumber" , getVoucherByNumber)
 VoucherRouter.delete('/deleteVoucher/:VoucherNumber' , deleteVoucherByNumber)
-
+VoucherRouter.get("/getOnlyCredit/:Account" , getOnlyCreditSide)
+VoucherRouter.put("/AdjustVoucher" , AdjustVoucherInvoice)
 export default VoucherRouter;

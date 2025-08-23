@@ -1,5 +1,5 @@
-import CustomerChqRecivedModal from "../modal/CustomerChqRecivedModal";
-import SalesInvoiceModal from "../modal/SalesInvoiceModal";
+import CustomerChqRecivedModal from "../Modal/CustomerChqRecivedModal";
+import SalesInvoiceModal from "../Modal/SalesInvoiceModal";
 
 export const CustomerChq = async (req, res) => {
     const { Date, ChqRecivedData, Status} = req.body;

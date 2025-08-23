@@ -1,8 +1,8 @@
-import locationModal from "../modal/LocationModal.js"
+import LocationModal from "../modal/LocationModal.js"
 
 export const Createlocation = async (req, res) => {
     try {
-        const data = await locationModal.create(req.body)
+        const data = await LocationModal.create(req.body)
         res.status(200).send("data Add")
     }
     catch (err) {
@@ -15,7 +15,7 @@ export const Createlocation = async (req, res) => {
 export const updatelocation = async (req, res) => {
     const { id } = req.params
     try {
-        const data = await locationModal.findByIdAndUpdate(id, req.body)
+        const data = await LocationModal.findByIdAndUpdate(id, req.body)
         res.status(200).send("Data Edit")
     }
     catch (err) {
@@ -25,7 +25,7 @@ export const updatelocation = async (req, res) => {
 
 export const getAlllocation = async (req, res) => {
     try {
-        const data = await locationModal.find()
+        const data = await LocationModal.find()
         res.status(200).send({ status: true, data: data });
     } catch (err) {
         res.status(400).send("some thing went wrong")
@@ -35,7 +35,7 @@ export const getAlllocation = async (req, res) => {
 
 export const getLastlocationCode = async (req, res) => {
     try {
-        const LastlocationCode = await locationModal.findOne().sort({ _id: -1 }).limit(1)
+        const LastlocationCode = await LocationModal.findOne().sort({ _id: -1 }).limit(1)
         console.log(LastlocationCode)
         res.send({ status: true, data: LastlocationCode });
     } catch (err) {
@@ -46,7 +46,7 @@ export const getLastlocationCode = async (req, res) => {
 export const deletelocation = async (req, res) => {
     const { id } = req.params
     try {
-        const data = await locationModal.findByIdAndDelete(id)
+        const data = await LocationModal.findByIdAndDelete(id)
         res.status(200).send({ status: true, data: data });
     }
     catch (err) {
@@ -61,7 +61,7 @@ export const PushBulkDataInlocation = async (req, res) => {
 
         for (const item of req.body) {
             console.log(item.Region)
-           const code = await  locationModal.find().sort({ _id: -1 }).limit(1);
+           const code = await  LocationModal.find().sort({ _id: -1 }).limit(1);
            console.log(code)
             let nextCode
             if (code.length == 0) {
@@ -72,7 +72,7 @@ export const PushBulkDataInlocation = async (req, res) => {
                 const nextNumber = parseInt(code[0].code, 10) + 1;
                 nextCode = nextNumber.toString().padStart(2, '0')
             }
-            const Newlocation = new locationModal({
+            const Newlocation = new LocationModal({
                 locationName: item.locationName,
                 code: nextCode,
             });

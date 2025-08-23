@@ -63,7 +63,7 @@ export const getSalesInvoiceByDate = async (req, res) => {
 
         ])
 
-
+        console.log(startDate, endDate)
         const mergedDataPurchase = await PurchaseInvoiceModal.aggregate([
             {
                 $match: {
@@ -124,7 +124,7 @@ export const getSalesInvoiceByDate = async (req, res) => {
             },
 
         ])
-        //   console.log(mergedDataPurchase, mergedDataPurchaseBefore)
+        console.log(mergedDataPurchase, startDate, endDate, "mergedDataPurchase")
         const TotalSalesDataBefore = await SalesInvoiceModal.aggregate([
             {
                 $match: {
@@ -703,7 +703,6 @@ export const getSalesInvoiceByDate = async (req, res) => {
 
 
         const YearOpening = firstOpneing[0]?.InvoetoryData
-        console.log(YearOpening)
 
         if (status == "Post") {
             const truemergedStockReplacementData = mergedStockReplacementData.filter((item) => item.PostStatus == true)
@@ -721,16 +720,16 @@ export const getSalesInvoiceByDate = async (req, res) => {
             const truemergedDataReturn = damage == "Fresh" ? mergedDataReturn.filter((item) => item.PostStatus !== false && item.Condition !== "Damage") : damage == "Damage" ? mergedDataReturn.filter((item) => item.PostStatus !== false && item.Condition == "Damage") : mergedDataReturn.filter((item) => item.PostStatus !== false)
             const trueTotalSalesReturnDataBefore = damage == "Fresh" ? TotalSalesReturnDataBefore.filter((item) => item.PostStatus == true && item.Condition !== "Damage") : damage == "Damage" ? TotalSalesReturnDataBefore.filter((item) => item.PostStatus == true && item.Condition == "Damage") : TotalSalesReturnDataBefore.filter((item) => item.PostStatus == true)
             const truemarge = truemergedDataPurchase.concat(truemergedDataSale).concat(truemergedDataPurchaseBefore).concat(trueTotalSalesDataBefore).concat(YearOpening).concat(truemergedInventoryOutData).concat(trurmergedInventoryOutDataBefore).concat(truemergedInventoryinDataBefore).concat(truemergedInventoryinData).concat(trueTotalSalesReturnDataBefore).concat(truemergedDataReturn).concat(turemergedPurchaseReturnData).concat(trueTotalPurchaseReturnBefore).concat(truemergedStockReplacementData).concat(trueTotalStockReplacementBefore)
-console.log("Fresh aya hai Damage" , damage)
+            console.log("Fresh aya hai Damage", damage)
             if (damage == "Damage") {
-                console.log("Damage aya hai")
+
                 const Damagedata = truemarge.filter((item) => item.Condition === "Damage")
-                console.log(Damagedata)
+
                 res.json(Damagedata)
             }
-            
+
             else if (damage == "Fresh") {
-                
+
                 if (product || Location || Store) {
                     const data = truemarge.filter((item) => {
 
@@ -768,7 +767,7 @@ console.log("Fresh aya hai Damage" , damage)
 
 
         }
-        
+
         else if (status == "UnPost") {
             console.log("UnPost")
             const falsemergedStockReplacementData = mergedStockReplacementData.filter((item) => item.PostStatus == false)
@@ -788,8 +787,7 @@ console.log("Fresh aya hai Damage" , damage)
             const falseTotalSalesReturnDataBefore = damage == "Fresh" ? TotalSalesReturnDataBefore.filter((item) => item.PostStatus == false && item.Condition !== "Damage") : damage == "Damage" ? TotalSalesReturnDataBefore.filter((item) => item.PostStatus == false && item.Condition == "Damage") : TotalSalesReturnDataBefore.filter((item) => item.PostStatus == false)
             const falsemarge = falsemergedDataPurchase.concat(falsemergedDataSale).concat(falsemergedDataPurchaseBefore).concat(falseTotalSalesDataBefore).concat(YearOpening).concat(falsemergedInventoryOutData).concat(falsemergedInventoryOutDataBefore).concat(falsemergedInventoryinDataBefore).concat(falsemergedInventoryinData).concat(falseTotalSalesReturnDataBefore).concat(falsemergedDataReturn).concat(falsemergedPurchaseReturnData).concat(falseTotalPurchaseReturnBefore).concat(falsemergedStockReplacementData).concat(falseTotalStockReplacementBefore)
             if (damage == "Damage") {
-                console.log("unpost ka Damage aya hai")
-                
+
                 const Damagedata = falsemarge.filter((item) => item.Condition === "Damage" || item.Type == 'Damage' || item.type == "StockReplacement")
                 console.log(Damagedata)
                 res.json(Damagedata)
@@ -797,7 +795,7 @@ console.log("Fresh aya hai Damage" , damage)
             else if (damage == "Fresh") {
                 if (Location || Store) {
                     const data = falsemarge.filter((item) => {
-                            const locationMatch = Location
+                        const locationMatch = Location
                             ? item?.LocationTo === Location ||
                             item?.LocationFrom === Location ||
                             item?.Location === Location
@@ -807,7 +805,7 @@ console.log("Fresh aya hai Damage" , damage)
                             StoreArray.includes(item?.StoreTo) ||
                             StoreArray.includes(item?.StoreFrom) ||
                             StoreArray.includes(item?.Store);
-                        return  locationMatch && storeMatch;
+                        return locationMatch && storeMatch;
                     });
 
 
@@ -837,7 +835,7 @@ console.log("Fresh aya hai Damage" , damage)
                         StoreArray.includes(item?.StoreTo) ||
                         StoreArray.includes(item?.StoreFrom) ||
                         StoreArray.includes(item?.Store);
-                    return  locationMatch && storeMatch;
+                    return locationMatch && storeMatch;
                 });
 
 
@@ -852,5 +850,17 @@ console.log("Fresh aya hai Damage" , damage)
     } catch (error) {
 
         res.status(500).json({ error: error.message });
+    }
+}
+
+
+
+export const OrderBookerSales = async () => {
+    try {
+   const { startDate, endDate, } = req.query;
+
+
+    } catch (err) {
+
     }
 }

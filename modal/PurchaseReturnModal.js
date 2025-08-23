@@ -22,10 +22,6 @@ const PurchaseReturnSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    SalesFlowRef: {
-        type: String,
-        required: true
-    },
     PostStatus: {
         type: Boolean,
         required: true
@@ -37,7 +33,12 @@ const PurchaseReturnSchema = mongoose.Schema({
     Location: {
         type: String,
         required: true
+    },
+    InvoiceRef : {
+        type: String,
+        required: true
     }
+
 })
 
 const PurchaseReturnModal = mongoose.model('PurchaseReturn', PurchaseReturnSchema)

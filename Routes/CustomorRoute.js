@@ -2,14 +2,13 @@ import express from "express";
 import { AddCustomerInBulk, creatCutomer, CustomerByVendor, deletCutomer, getAllCutomer, getLastCutomer, updatCutomer } from "../Controllar/CostomerControllar.js";
 
 
-const CustomorRouter = express.Router()
+export  const CustomorROuter = express.Router()
 
-CustomorRouter.post('/', creatCutomer)
-CustomorRouter.get('/', getAllCutomer)
-CustomorRouter.get('/lastCustomor', getLastCutomer)
-CustomorRouter.put('/updatCustomer/:id', updatCutomer)
-CustomorRouter.delete('/deletCustomer/:id', deletCutomer)
-CustomorRouter.get("/CustomerByVendor/:Vendor" , CustomerByVendor)
-CustomorRouter.post("/AddInBulk", AddCustomerInBulk)
+CustomorROuter.post('/', creatCutomer)
+CustomorROuter.get('/', getAllCutomer)
+CustomorROuter.get('/lastCustomor', getLastCutomer)
+CustomorROuter.put('/updatCustomer/:id', updatCutomer)
+CustomorROuter.delete('/deletCustomer/:id', deletCutomer)
+CustomorROuter.get("/CustomerByVendor/:Vendor" , CustomerByVendor)
+CustomorROuter.post("/AddInBulk", AddCustomerInBulk)
 
-export default CustomorRouter

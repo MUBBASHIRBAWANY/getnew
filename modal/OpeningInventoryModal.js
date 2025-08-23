@@ -19,7 +19,8 @@ const OpeningInventorySchema = mongoose.Schema({
     Status : {
         type : String,
         require : true
-    }
+    },
+ 
 })
 
 const OpeningInventoryModal = mongoose.model("opening-Inventory" , OpeningInventorySchema)

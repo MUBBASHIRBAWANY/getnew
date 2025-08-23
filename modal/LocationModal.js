@@ -12,6 +12,6 @@ const locationSchema = mongoose.Schema({
     }
 })
 
-const locationModal = mongoose.model('location' , locationSchema)
+const LocationModal = mongoose.model('location' , locationSchema)
 
-export default locationModal
+export default LocationModal
