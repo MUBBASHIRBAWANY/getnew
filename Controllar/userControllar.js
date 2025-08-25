@@ -1,6 +1,7 @@
 import express from "express";
 import userModel, { comparePassword, getAuthontication, hashPassword } from "../modal/UserModal.js";
 import jwt from "jsonwebtoken";
+import db from "../db/db.js";
 
 const User = userModel
 export const userRegister = async (req, res) => {
@@ -173,6 +174,7 @@ export const deleteUser = async (req, res) => {
 
 export const getUsers = async (req, res) => {
     try {
+         await db()
         const users = await User.find();
         res.status(200).send({ status: true, data: users });
     } catch (err) {
