@@ -9,6 +9,7 @@ const InventoryReportRoute = express.Router()
 
 InventoryReportRoute.get("/GetDataByDate" , getSalesInvoiceByDate)
 InventoryReportRoute.get("/SalesDumpData" , allSalesDumpData)
+
 InventoryReportRoute.get("/PurchaseDumpData" , allPurchaseDumpData)
 
 

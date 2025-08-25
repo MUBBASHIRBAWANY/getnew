@@ -5,7 +5,7 @@ const URL = process.env.URL2
 
 const db = () => {
  mongoose.connect(URL).then(()=>{
-    console.log("DataBase Conected")
+    console.log("DataBase Conected", URL);
 })
 }
 
