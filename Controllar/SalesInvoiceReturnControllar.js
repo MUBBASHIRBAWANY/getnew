@@ -141,7 +141,8 @@ export const postSalesReturn = async (req, res) => {
 
             // Update RemainingAmount ONCE after processing all items
             invoice.RemainingAmount -= totalAddAmount;
-            const all = await SalesInvoiceModal.findOneAndUpdate({ SalesInvoice: invoice.SalesInvoice }, { SalesData: invoice.SalesData })
+
+            const all = await SalesInvoiceModal.findOneAndUpdate({ SalesInvoice: invoice.SalesInvoice }, {RemainingAmount : invoice.RemainingAmount});
             const bulkOps = SalesReturnData.map(item => ({
                 updateOne: {
                     filter: {
@@ -218,7 +219,7 @@ export const postSalesReturn = async (req, res) => {
 
             // Update RemainingAmount ONCE after processing all items
             invoice.RemainingAmount += totalAddAmount;
-            const all = await SalesInvoiceModal.findOneAndUpdate({ SalesInvoice: invoice.SalesInvoice }, { SalesData: invoice.SalesData })
+            const all = await SalesInvoiceModal.findOneAndUpdate({ SalesInvoice: invoice.SalesInvoice }, {RemainingAmount : invoice.RemainingAmount});
             console.log("invoice update hogai", invoice)
 
             // ✅ Step 2: Stock decrement (existing logic)
@@ -287,6 +288,7 @@ export const postSalesReturn = async (req, res) => {
     }
 
 };
+
 
 
 export const createSalesInvoiceReturnBulk = async (req, res) => {
